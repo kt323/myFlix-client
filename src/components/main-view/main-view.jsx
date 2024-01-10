@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { BookCard } from "../book-card/book-card";
 import { BookView } from "../book-view/book-view";
-import { LoginView } from "../login-view/login-view"; // Corrected import statement
-import { SignupView } from "../signup-view/signup-view"; // Added import statement for SignupView
+import { LoginView } from "../login-view/login-view"; 
+import { SignupView } from "../signup-view/signup-view";
+import Row from "react-bootstrap/Row";
+import { Col, Form, Button } from "react-bootstrap";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -18,15 +20,17 @@ export const MainView = () => {
     }
 
     fetch("https://myflixdb-8tdc.onrender.com", {
-      headers: { Authorization: `Bearer ${token}` }, // Corrected string interpolation
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then((response) => response.json())
       .then((data) => {
-        const moviesFromApi = data.docs.map((movie) => { // Corrected variable name from 'doc' to 'movie'
+        console.log(data);
+        const moviesFromApi = data.docs.map((movie) => { 
           return {
-            id: movie._id, // Corrected variable name from 'movies' to 'movie'
+            id: movie._id,
             Title: movie.Title,
             Description: movie.Description,
+            Year: movie.Year,
             Genre: {
               Name: movie.Genre.Name,
             },
@@ -35,73 +39,55 @@ export const MainView = () => {
             },
           };
         });
-
         setMovies(moviesFromApi);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
       });
   }, [token]);
 
-  const handleLogin = (data) => {
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      setToken(data.token);
-    } else {
-      alert("No such user");
-    }
-  };
+return (
+  <Row>
 
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-  };
-
-  if (!user) {
-    return (
-      <>
-        <LoginView onLoggedIn={handleLogin} />
+  {!user ? (
+    <>
+      <LoginView onLoggedIn={(user) => setUser(user)} />
         or
-        <SignupView onLoggedIn={handleLogin} />
+      <SignupView />
       </>
-    );
-  }
-
-  if (selectedMovie) {
-    return (
+    ) : selectedMovie ? (
+      <BookView
+        book={selectedMovie}
+        onBackClick={() => setSelectedMovie(null)} />
+    ) : books.length === 0 ? (
+      <div>The list is empty!</div>
+    ) : (
       <>
-        <button onClick={handleLogout}>Logout</button>
-        <BookView
-          book={selectedMovie}
-          onBackClick={() => setSelectedMovie(null)}
-        />
+      {books.map((book) => (
+        <Col className="mb-5" md={3}>
+          <BookCard
+            key={book.id}
+            book={book}
+            onBookClick={(newSelectedBook) => {
+            setSelectedBook(newSelectedBook);
+      }}
+      />
+        </Col>
+            ))}
       </>
-    );
-  }
-
-  if (movies.length === 0) {
-    return (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <div>The list is empty!</div>
-      </>
-    );
-  }
-
-  return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      {movies.map((movie) => (
-        <BookCard
-          key={movie.id}
-          book={movie}
-          onBookClick={(newSelectedMovie) => {
-            setSelectedMovie(newSelectedMovie);
-          }}
-        />
-      ))}
-    </div>
+    )}
+    </Row>
   );
 };
+
+  // return (
+  //   <div>
+  //     <button onClick={handleLogout}>Logout</button>
+  //     {movies.map((movie) => (
+  //       <BookCard
+  //         key={movie.id}
+  //         book={movie}
+  //         onBookClick={(newSelectedMovie) => {
+  //           setSelectedMovie(newSelectedMovie);
+  //         }}
+  //       />
+  //     ))}
+  //   </div>
+  // );

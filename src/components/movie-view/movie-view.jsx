@@ -1,0 +1,40 @@
+import { useParams, Link } from "react-router-dom";
+import "./book-view.scss";
+import { Row, Col, Button } from "react-bootstrap";
+
+export const BookView = ({ books }) => {
+  const { bookId } = useParams();
+  const book = books.find((b) => b.id === bookId);
+
+  return (
+    <Row className="justify-content-md-center">
+      <Col md={7} className="col-12">
+        <img src={book.image} alt="" className="mx-auto w-100" />
+      </Col>
+      <Col md={5} className="col-12">
+        <div className="my-1">
+          <span className="h1">{book.Title}</span>
+        </div>
+        <div className="my-1">
+          <span className="h6">Description:</span>
+          <span>{book.Description}</span>
+        </div>
+        <div className="my-1">
+          <span className="h6">Author: </span>
+          <span>{book.Author.Name}</span>
+        </div>
+        <div className="my-1">
+          <span className="h6">Genre: </span>
+          <span>{book.Genre.Name}</span>
+        </div>
+        <div className="my-1">
+          <span className="h6">Year: </span>
+          <span>{book.Year}</span>
+        </div>
+        <Link to="/" className="back-button">
+          Back
+        </Link>
+      </Col>
+    </Row>
+  );
+};

@@ -9,8 +9,15 @@
   "license": "ISC",
   "dependencies": {
     "react": "^18.2.0",
+<<<<<<< Updated upstream
     "react-dom": "^18.2.0",
     "prop-types": "^15.8.1"
+=======
+    "react-bootstrap": "^2.9.2",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.21.1",
+    "react-router-dom": "^6.21.1"
+>>>>>>> Stashed changes
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.10.3",

@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-import { useState, useEffect } from "react";
-import { BookCard } from "../book-card/book-card";
-import { BookView } from "../book-view/book-view";
-import { LoginView } from "../login-view/login-view"; // Corrected import statement
-import { SignupView } from "../signup-view/signup-view"; // Added import statement for SignupView
-=======
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Link, BrowserRouter } from "react-router-dom";
 import { movieCard } from "../movie-card/movie-card";
@@ -14,7 +7,7 @@ import { SignupView } from "../signup-view/signup-view";
 import NavigationBar from "../navigation-bar/navigation-bar.jsx";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
->>>>>>> Stashed changes
+import { ProfileView } from "../profile-view/profile-view";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -29,26 +22,10 @@ export const MainView = () => {
     }
 
     fetch("https://myflixdb-8tdc.onrender.com", {
-      headers: { Authorization: `Bearer ${token}` }, // Corrected string interpolation
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then((response) => response.json())
       .then((data) => {
-<<<<<<< Updated upstream
-        const moviesFromApi = data.docs.map((movie) => { // Corrected variable name from 'doc' to 'movie'
-          return {
-            id: movie._id, // Corrected variable name from 'movies' to 'movie'
-            Title: movie.Title,
-            Description: movie.Description,
-            Genre: {
-              Name: movie.Genre.Name,
-            },
-            Director: {
-              Name: movie.Director.Name,
-            },
-          };
-        });
-
-=======
         const moviesFromApi = data.docs.map((movie) => ({
           id: movie._id,
           Title: movie.Title,
@@ -61,76 +38,10 @@ export const MainView = () => {
             Name: movie.Director.Name,
           },
         }));
->>>>>>> Stashed changes
         setMovies(moviesFromApi);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
       });
   }, [token]);
 
-<<<<<<< Updated upstream
-  const handleLogin = (data) => {
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      setToken(data.token);
-    } else {
-      alert("No such user");
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-  };
-
-  if (!user) {
-    return (
-      <>
-        <LoginView onLoggedIn={handleLogin} />
-        or
-        <SignupView onLoggedIn={handleLogin} />
-      </>
-    );
-  }
-
-  if (selectedMovie) {
-    return (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <BookView
-          book={selectedMovie}
-          onBackClick={() => setSelectedMovie(null)}
-        />
-      </>
-    );
-  }
-
-  if (movies.length === 0) {
-    return (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <div>The list is empty!</div>
-      </>
-    );
-  }
-
-  return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      {movies.map((movie) => (
-        <BookCard
-          key={movie.id}
-          book={movie}
-          onBookClick={(newSelectedMovie) => {
-            setSelectedMovie(newSelectedMovie);
-          }}
-        />
-      ))}
-    </div>
-=======
   return (
     <BrowserRouter>
       <NavigationBar user={user} onLogout={() => setUser(null)} />
@@ -170,9 +81,20 @@ export const MainView = () => {
               ))
             }
           />
+          <Route
+            path="/profile"
+            element={
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <Col md={8}>
+                  <ProfileView user={user} />
+                </Col>
+              )
+            }
+          />
         </Routes>
       </Row>
     </BrowserRouter>
->>>>>>> Stashed changes
   );
 };

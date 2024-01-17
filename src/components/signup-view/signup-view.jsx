@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Button, Form, Container } from "react-bootstrap";
+import "./signup-view.scss";
 
 export const SignupView = () => {
   const [username, setUsername] = useState("");
@@ -14,9 +16,9 @@ export const SignupView = () => {
       Password: password,
       Email: email,
       Birthday: birthday,
-    };
+    }
 
-    fetch("SIGNUP_URL", {
+    fetch("https://myflix-app-jpox.onrender.com/users", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -38,45 +40,61 @@ export const SignupView = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          minLength="3"
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </label>
-      <label>
-        Birthday:
-        <input
-          type="date"
-          value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
-          required
-        />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
-  );
+    <Container className="signupBox">
+        <h2>Signup</h2>
+        <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="signUpFormUsername" className="formBox">
+                <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    minLength="3"
+                // autoComplete="off"
+                />
+                <Form.Label>Username</Form.Label>
+            </Form.Group>
+
+            <Form.Group controlId="signUpFormPassword" className="formBox">
+
+                <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="password"
+                />
+                <Form.Label>Password</Form.Label>
+            </Form.Group>
+            <Form.Group controlId="signUpFormEmail" className="formBox">
+                <Form.Control
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    // autoComplete="off"
+                    required
+                />
+                <Form.Label>Email</Form.Label>
+            </Form.Group>
+            <Form.Group controlId="signUpFormBirthday" className="formBox">
+                <Form.Control
+                    type="date"
+                    value={birth_date}
+                    onChange={(e) => setBirth_Date(e.target.value)}
+                    required
+                />
+                <Form.Label className="birthdayLabel">Birthday</Form.Label>
+
+            </Form.Group>
+            <Button id="signupBtn" type="submit">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Signup
+            </Button>
+        </Form>
+    </Container>
+);
 };
+export { SignupView };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { updateUser, deregisterUser } from "https://myflix-app-jpox.onrender.com/users/${user.Username}"; 
+// import { updateUser, deregisterUser } from "https://myflix-app-jpox.onrender.com/users/${user.Username}"; 
 
 const ProfileView = ({ user }) => {
     const [username, setUsername] = useState(user.username);

@@ -4,10 +4,10 @@ import { movieCard } from "../movie-card/movie-card";
 import { movieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
-import NavigationBar from "../navigation-bar/navigation-bar.jsx";
+import NavigationBar from "../navigation-bar/navigation-bar";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { ProfileView } from "../profile-view/profile-view";
+import ProfileView from "../profile-view/profile-view";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));

@@ -97,4 +97,4 @@ export const SignupView = () => {
     </Container>
 );
 };
-export { SignupView };
+export default SignupView;

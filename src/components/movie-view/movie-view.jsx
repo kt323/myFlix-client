@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import "./movie-view.scss";
-import { Row, Col, Button } from "react-bootstrap";
 
 export const movieView = ({ movies, favoritemovies, setFavoritemovies }) => {
   const { movieId } = useParams();
@@ -10,16 +13,16 @@ export const movieView = ({ movies, favoritemovies, setFavoritemovies }) => {
 
   const toggleFavorite = () => {
     if (isFavorited) {
-      // Remove the movie from favorites
+      
       const updatedFavorites = favoritemovies.filter((favmovieId) => favmovieId !== movieId);
       setFavoritemovies(updatedFavorites);
     } else {
-      // Add the movie to favorites
+      
       const updatedFavorites = [...favoritemovies, movieId];
       setFavoritemovies(updatedFavorites);
     }
 
-    setIsFavorited(!isFavorited); // Toggle the favorite status
+    setIsFavorited(!isFavorited); 
   };
 
   return (
@@ -56,4 +59,26 @@ export const movieView = ({ movies, favoritemovies, setFavoritemovies }) => {
       </Col>
     </Row>
   );
+};
+
+movieView.propTypes = {
+  movie: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    releaseYear: PropTypes.string.isRequired,
+    genre: PropTypes.shape({
+      Name: PropTypes.string.isRequired,
+      Description: PropTypes.string
+    }).isRequired,
+    director: PropTypes.shape({
+      Name: PropTypes.string.isRequired,
+      Bio: PropTypes.string,
+      Birth: PropTypes.string,
+      Death: PropTypes.string
+    }).isRequired,
+    imagePath: PropTypes.string.isRequired,
+    featured: PropTypes.bool.isRequired,
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  onBackClick: PropTypes.func.isRequired
 };

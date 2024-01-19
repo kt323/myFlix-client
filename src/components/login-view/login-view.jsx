@@ -1,4 +1,9 @@
 import React, {useState} from "react";
+import { useState } from "react";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+import "./login-view.scss";
 
 export const LoginView = ({ onLoggedIn }) => {
     const [username, setUsername] = useState("");
@@ -11,35 +16,68 @@ export const LoginView = ({ onLoggedIn }) => {
             secret: password
         };
 
-        fetch("https://openlibrary.org/account/login.json", {
+        fetch("https://openlibrary.org/account/login", {
             method: "POST",
+            headers: {
+              "Content-Type": "application.json"
+            },
             body: JSON.stringify(data)
-          }).then((response) => {
-            if (response.ok) {
-                onLoggedIn(username);
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.user) {
+              localStorage.setItem("user", JSON.stringify(data.user));
+              localStorage.setItem("token", data.token);
+              onLoggedIn(data.user, data.token);
             } else {
-                alert("Login failed");
+              alert("No such user");
             }
+          })
+          .catch((error) => {
+            alert(error);
           });
-    };
+      };
 
     return (
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input 
+      <div>
+        <p className="text-center mt-4 mb-5">Welcome aboard <span className="login-title text-center">myFlix</span></p>
+        
+        <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formUsername">
+          <Form.Label>Username:</Form.Label>
+          <Form.Control 
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label>
-          Password:
-          <input 
+            onChange={(e) => setUsername(e.target.value)}
+            minLength="5"
+            required 
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formPassword" className="my-3">
+          <Form.Label>Password:</Form.Label>
+          <Form.Control
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    );
-  };
+            onChange={(e) => setPassword(e.target.value)}
+            minLength="8"
+            required
+          />
+        </Form.Group>
+        <div className="d-flex justify-content-between">
+          <Button
+            type="submit"
+            className="login-button"
+          >
+            Sign In
+          </Button>
+          <Link to="/signup">
+            <Button variant="link" >
+              New user? Create an account!
+            </Button>
+          </Link>
+        </div>
+      </Form>
+    </div>
+  );
+};

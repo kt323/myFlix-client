@@ -109,7 +109,6 @@ export const MovieCard = ({ movie, user, setUser }) => {
   );
 };
 
-//defining prop-type constraints
 MovieCard.propTypes = {
   movie: PropTypes.shape({
     title: PropTypes.string.isRequired}).isRequired,

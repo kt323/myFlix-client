@@ -14,10 +14,10 @@ export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
   
+  const [users, setUsers] = useState([]);
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
-  const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const tokenRef = useRef(storedToken ? storedToken : null);
 
@@ -198,25 +198,19 @@ export const MainView = () => {
             }
           />
           <Route
-            path="/profile"
-            element={
-              <>
-                {!user ? (
-                  <Navigate to="/login" replace />
-                ) : (
-                  <Col md={5}>
-                    <ProfileView
-                      user={user}
-                      token={token}
-                      setUser={updatedUser}
-                      movies={movies}
-                    />
-                  </Col>
-                )
-                }
-              </>
-            }
-          />
+              path="/profile"
+              element={
+                <>
+                  {!user ? (
+                    <Navigate to="/login" replace />
+                  ) : (
+                    <Col md={5}>
+                      <ProfileView user={user} token={token} movies={movies} onDelete={onDelete}/>
+                    </Col>
+                  )}
+                </>
+              }
+            />
         </Routes>
       </Row>
     </BrowserRouter>

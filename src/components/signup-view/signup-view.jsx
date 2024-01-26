@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./signup-view.scss";
+import { API_URL } from "../../CONST_VARS";
 
 export const SignupView = () => {
   const [username, setUsername] = useState("");
@@ -20,7 +21,7 @@ export const SignupView = () => {
     };
 
     try {
-      const response = await fetch("https://myflix-app-jpox.onrender.com/users", {
+      const response = await fetch(API_URL + "/users", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -30,13 +31,17 @@ export const SignupView = () => {
 
       if (response.ok) {
         alert("Signup successful");
-        window.location.reload();
       } else {
-        alert("Signup failed");
+        const responseData = await response.json();
+        if (responseData && responseData.error) {
+          alert(`Signup failed: ${responseData.error}`);
+        } else {
+          alert("Signup failed");
+        }
       }
     } catch (error) {
-      console.error("Error during signup:", error);
-      alert("Signup failed");
+      console.error(error);
+      alert("An error occurred while signing up.");
     }
   };
 

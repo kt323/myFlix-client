@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import "./movie-card.scss";
+import { API_URL } from "../../CONST_VARS";
 
 export const MovieCard = ({ movie, user, setUser }) => {
   const storedToken = localStorage.getItem("token");
@@ -16,7 +17,7 @@ export const MovieCard = ({ movie, user, setUser }) => {
   }, [user]);
 
   const addFavorite = () => {
-    fetch(`https://myflix-app-jpox.onrender.com/users/${user.Username}/movies/${movie.id}`, {
+    fetch(API_URL +"/${user.Username}/movies/${movie.id}", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${storedToken}`
@@ -40,7 +41,7 @@ export const MovieCard = ({ movie, user, setUser }) => {
   };
 
   const removeFavorite = () => {
-    fetch(`https://myflix-app-jpox.onrender.com/users/${user.Username}/movies/${movie.id}`, {
+    fetch(API_URL +"/users/${user.Username}/movies/${movie.id}", {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${storedToken}`

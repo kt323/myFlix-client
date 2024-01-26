@@ -3,46 +3,52 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import "./login-view.scss";
-
+import { API_URL } from "../../CONST_VARS";
 
 export const LoginView = ({ onLoggedIn }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const handleSubmit = (event) => {
-        event.preventDefault();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-        const data = {
-            access: username,
-            secret: password
-        };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        fetch("https://openlibrary.org/account/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application.json"
-            },
-            body: JSON.stringify(data)
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.user) {
-              localStorage.setItem("user", JSON.stringify(data.user));
-              localStorage.setItem("token", data.token);
-              onLoggedIn(data.user, data.token);
-            } else {
-              alert("No such user");
-            }
-          })
-          .catch((error) => {
-            alert(error);
-          });
-      };
+    const data = {
+      Username: username,
+      Password: password
+    };
 
-    return (
-      <div>
-        <p className="text-center mt-4 mb-5">Welcome aboard <span className="login-title text-center">myFlix</span></p>
-        
-        <Form onSubmit={handleSubmit}>
+    try {
+      const response = await fetch(API_URL + "/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        if (responseData.user && responseData.token) {
+          sessionStorage.setItem("user", JSON.stringify(responseData.user));
+          sessionStorage.setItem("token", responseData.token);
+          onLoggedIn(responseData.user, responseData.token);
+        } else {
+          alert("No such user");
+        }
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while logging in.");
+    }
+  };
+
+  return (
+    <div>
+      <p className="text-center mt-4 mb-5">Welcome aboard <span className="login-title text-center">myFlix</span></p>
+      
+      <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formUsername">
           <Form.Label>Username:</Form.Label>
           <Form.Control 
@@ -60,7 +66,7 @@ export const LoginView = ({ onLoggedIn }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            minLength="8"
+            minLength="2"
             required
           />
         </Form.Group>
@@ -80,4 +86,4 @@ export const LoginView = ({ onLoggedIn }) => {
       </Form>
     </div>
   );
-};
+}

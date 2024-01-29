@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container, Form, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { clearUser } from "../../reducers/user";
+import { clearUser } from "../redux/reducers/user";
 
 export const NavigationBar = () => {
   const user = useSelector((state) => state.user);

@@ -10,8 +10,8 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Routes, Route, Navigate, Link, BrowserRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setMovies } from "../../reducers/movies";
-import { setUser } from "../../reducers/user";
+import { setMovies } from "../redux/reducers/movies";
+import { setUser } from "../redux/reducers/user";
 
 
 export const MainView = () => {
@@ -50,7 +50,7 @@ export const MainView = () => {
         });
         dispatch(setMovies(moviesFromApi))
       });
-  }, [token]);
+  }, [token, dispatch]);
 
   return (
     <BrowserRouter>

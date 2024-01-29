@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Button, Card, Form, Row, Col } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, clearUser } from "../../reducers/user";
+import { setUser, clearUser } from "../redux/reducers/user";
 import "./profile-view.scss";
-import { API_URL } from "../../CONST_VARS";
 
 export const ProfileView = () => {
   const { user, token } = useSelector((state) => state.user);

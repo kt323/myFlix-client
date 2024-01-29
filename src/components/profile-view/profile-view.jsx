@@ -1,171 +1,162 @@
-import React, { useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { useState } from "react";
+import { Button, Card, Form, Row, Col } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, clearUser } from "../../reducers/user";
 import "./profile-view.scss";
 import { API_URL } from "../../CONST_VARS";
 
-export const ProfileView = ({ user, token, setUser, movies, onDelete }) => {
+export const ProfileView = () => {
+  const { user, token } = useSelector((state) => state.user);
+  const movies = useSelector((state) => state.movies.list);
   const [username, setUsername] = useState(user.Username);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(user.Password);
   const [email, setEmail] = useState(user.Email);
   const [birthday, setBirthday] = useState(user.Birthday);
-  const storedToken = localStorage.getItem("token");
 
-  const handleUpdate = async (event) => {
+  const dispatch = useDispatch();
+
+  let favoriteMovies = movies.filter(m => user.FavoriteMovies.includes(m.id))
+
+  const handleUpdate = (event) => {
     event.preventDefault();
 
     const data = {
       Username: username,
       Password: password,
       Email: email,
-      Birthday: birthday,
+      Birthday: birthday
     };
 
-    try {
-      const response = await fetch(`${API_URL}/users/${user.Username}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        alert("Profile updated successfully");
-        const updatedUser = await response.json();
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setUser(updatedUser);
-        window.location.reload();
-      } else {
-        alert("Unable to update profile.");
+    fetch(`https://movie-api-vudt.onrender.com/users/${user.Username}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred while updating the profile.");
-    }
+    }).then(async (response) => {
+      if (response.ok) {
+        const updatedUser = await response.json();
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        dispatch(setUser({ user: updatedUser, token: token }));
+        alert("Account information updated!");
+      } else {
+        alert("Account information was not updated!");
+      }
+    }).catch(error => {
+      console.error('Error: ', error);
+    });
   };
 
-  const handleDelete = async (event) => {
+  const handleDelete = (event) => {
     event.preventDefault();
 
-    try {
-      const response = await fetch(`${API_URL}/users/${user.Username}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
-
-      if (response.ok) {
-        onDelete();
-        alert("Account deleted successfully");
-        window.location.replace("https://cf-myflix-client.netlify.app/login");
-      } else {
-        alert("Unable to delete account");
+    fetch(`https://movie-api-vudt.onrender.com/users/${user.Username}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred while deleting the account.");
-    }
+    }).then((response) => {
+      if (response.ok) {
+        alert("Account deleted!");
+        dispatch(clearUser());
+        window.location.reload();
+      }
+    }).catch(error => {
+      console.error('Error: ', error);
+    });
   };
-
-  const favoriteMovies = movies.filter((movie) =>
-    user.FavoriteMovies.includes(movie.id)
-  );
 
   return (
     <>
-      <Row className="pv-content-center">
-        <Col md={6}>
-          <h3 className="my-3 text-center">Account Info</h3>
-          <Form className="update-info-form p-3" onSubmit={handleUpdate}>
-            <Form.Group controlId="formUsername">
-              <Form.Label>Username: </Form.Label>
-              <Form.Control
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                placeholder={user.Username}
-                className="mb-3"
-              />
-            </Form.Group>
+    <h1>My Profile</h1>
 
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password: </Form.Label>
-              <Form.Control
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                minLength="8"
-                required
-                className="mb-3"
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email: </Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={user.Email}
-                className="mb-3"
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formBirthday">
-              <Form.Label>Birthday: </Form.Label>
-              <Form.Control
-                type="date"
-                value={birthday}
-                onChange={(e) => setBirthday(e.target.value)}
-                className="mb-4"
-                required
-              />
-            </Form.Group>
-
-            <div className="d-flex justify-content-between">
-              <Button
-                type="submit"
-                onClick={handleUpdate}
-                className="update-profile-button"
-                variant="primary"
-              >
-                Update Info
-              </Button>
-              <DeleteAccountModal
-                handleDelete={handleDelete}
-                className="modal-button"
-              />
-            </div>
-          </Form>
+      <Row>
+        <Col className="mb-4" md={6}>
+          <Card className="h-100">
+            <Card.Body>
+              <Card.Title>Profile</Card.Title>
+              <Card.Text>Username: {user.Username}</Card.Text>
+              <Card.Text>Email: {user.Email}</Card.Text>
+              <Card.Text>Birthday: {user.Birthday}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col className="mb-4">
+          <Card className="h-100">
+            <Card.Body>
+              <Card.Title>Edit Profile</Card.Title>
+              <Form onSubmit={handleUpdate}>
+                <Form.Group controlId="formUsername">
+                  <Form.Label>Username:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    minLength="3"
+                  />
+                </Form.Group>
+                <Form.Group controlId="formPassword">
+                  <Form.Label>Password:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group controlId="formEmail">
+                  <Form.Label>Email:</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group controlId="formBirthday">
+                  <Form.Label>Birthday:</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
-
-      <Row className="justify-content-around">
-        <h3 className="mt-5 mb-3 text-center">My Favorite Movies</h3>
-        {favoriteMovies.map((movie) => {
-          return (
-            <Col key={movie.id} md={4} sm={6} className="mb-4">
-              <MovieCard
-                movie={movie}
-                user={user}
-                token={token}
-                setUser={setUser}
-                onDelete={onDelete}
-              />
-            </Col>
-          );
-        })}
+      <Row md={8}>
+        <Col>
+          <Card>
+            <h1>Favorite movies</h1>
+            <hr />
+            {favoriteMovies.length === 0 ? (
+              <Col>This list is empty!</Col>
+            ) : (
+              <Row>
+                {favoriteMovies.map((movie) => (
+                  <Col className="mb-4" key={movie.id} md={3}>
+                    <MovieCard movie={movie} />
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </Card>
+        </Col>
       </Row>
+      <Button variant="primary" onClick={handleDelete}>
+        Delete Account
+      </Button>
     </>
-  );
-};
+  )
+}
 
 export default ProfileView;

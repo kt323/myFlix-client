@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import { setUser } from "../redux/reducers/user";
 import "./login-view.scss";
-import { API_URL } from "../../CONST_VARS";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,12 +18,12 @@ export const LoginView = ({ onLoggedIn }) => {
     };
 
     try {
-      const response = await fetch(API_URL + "/login", {
+      const response = await fetch("https://movie-api-vudt.onrender.com/movie_api/users", {
         method: "POST",
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
       });
 
       if (response.ok) {
@@ -34,14 +33,14 @@ export const LoginView = ({ onLoggedIn }) => {
           sessionStorage.setItem("token", responseData.token);
           onLoggedIn(responseData.user, responseData.token);
         } else {
-          alert("No such user");
+          setError("No such user");
         }
       } else {
-        alert("Login failed");
+        setError("Login failed");
       }
     } catch (error) {
       console.error(error);
-      alert("An error occurred while logging in.");
+      setError("An error occurred while logging in.");
     }
   };
 
@@ -85,6 +84,7 @@ export const LoginView = ({ onLoggedIn }) => {
           </Link>
         </div>
       </Form>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
-}
+};

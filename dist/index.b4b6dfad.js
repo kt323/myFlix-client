@@ -46561,14 +46561,16 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "LoginView", ()=>LoginView);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
 var _form = require("react-bootstrap/Form");
 var _formDefault = parcelHelpers.interopDefault(_form);
 var _button = require("react-bootstrap/Button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
 var _reactRouterDom = require("react-router-dom");
 var _loginViewScss = require("./login-view.scss");
+var _constVars = require("../../CONST_VARS");
 var _s = $RefreshSig$();
-const LoginView = ({ onLoggedIn })=>{
+const LoginView = ()=>{
     _s();
     const [username, setUsername] = (0, _react.useState)("");
     const [password, setPassword] = (0, _react.useState)("");
@@ -46579,26 +46581,17 @@ const LoginView = ({ onLoggedIn })=>{
             Username: username,
             Password: password
         };
-        try {
-            const response = await fetch("https://movie-api-vudt.onrender.com/movie_api/users", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-            if (response.ok) {
-                const responseData = await response.json();
-                if (responseData.user && responseData.token) {
-                    sessionStorage.setItem("user", JSON.stringify(responseData.user));
-                    sessionStorage.setItem("token", responseData.token);
-                    onLoggedIn(responseData.user, responseData.token);
-                } else setError("No such user");
-            } else setError("Login failed");
-        } catch (error) {
-            console.error(error);
-            setError("An error occurred while logging in.");
-        }
+        fetch((0, _constVars.API_URL) + "/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then((response)=>response.json()).then((responseData)=>{
+            localStorage.setItem("user", JSON.stringify(responseData.user));
+            localStorage.setItem("token", responseData.token);
+            location.href = "/";
+        }).catch((e)=>setError(e.message));
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         children: [
@@ -46611,13 +46604,13 @@ const LoginView = ({ onLoggedIn })=>{
                         children: "myFlix"
                     }, void 0, false, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 49,
-                        columnNumber: 59
+                        lineNumber: 41,
+                        columnNumber: 24
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 49,
+                lineNumber: 40,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default), {
@@ -46630,7 +46623,7 @@ const LoginView = ({ onLoggedIn })=>{
                                 children: "Username:"
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 53,
+                                lineNumber: 46,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default).Control, {
@@ -46641,13 +46634,13 @@ const LoginView = ({ onLoggedIn })=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 54,
+                                lineNumber: 47,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 52,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default).Group, {
@@ -46658,7 +46651,7 @@ const LoginView = ({ onLoggedIn })=>{
                                 children: "Password:"
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 64,
+                                lineNumber: 57,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _formDefault.default).Control, {
@@ -46669,13 +46662,13 @@ const LoginView = ({ onLoggedIn })=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 65,
+                                lineNumber: 58,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 63,
+                        lineNumber: 56,
                         columnNumber: 9
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -46687,7 +46680,7 @@ const LoginView = ({ onLoggedIn })=>{
                                 children: "Sign In"
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 74,
+                                lineNumber: 67,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
@@ -46697,24 +46690,24 @@ const LoginView = ({ onLoggedIn })=>{
                                     children: "New user? Create an account!"
                                 }, void 0, false, {
                                     fileName: "src/components/login-view/login-view.jsx",
-                                    lineNumber: 81,
+                                    lineNumber: 71,
                                     columnNumber: 13
                                 }, undefined)
                             }, void 0, false, {
                                 fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 80,
+                                lineNumber: 70,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 73,
+                        lineNumber: 66,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 51,
+                lineNumber: 44,
                 columnNumber: 7
             }, undefined),
             error && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -46722,13 +46715,13 @@ const LoginView = ({ onLoggedIn })=>{
                 children: error
             }, void 0, false, {
                 fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 87,
+                lineNumber: 75,
                 columnNumber: 17
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/login-view/login-view.jsx",
-        lineNumber: 48,
+        lineNumber: 39,
         columnNumber: 5
     }, undefined);
 };
@@ -46742,7 +46735,12 @@ $RefreshReg$(_c, "LoginView");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-bootstrap/Form":"iBZ80","react-bootstrap/Button":"aPzUt","react-router-dom":"9xmpe","./login-view.scss":"e57ax","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"e57ax":[function() {},{}],"4OGiN":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-bootstrap/Form":"iBZ80","react-bootstrap/Button":"aPzUt","react-router-dom":"9xmpe","./login-view.scss":"e57ax","../../CONST_VARS":"1KD8l","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"e57ax":[function() {},{}],"1KD8l":[function(require,module,exports) {
+module.exports = {
+    API_URL: "https://movie-api-vudt.onrender.com"
+};
+
+},{}],"4OGiN":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$73d1 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -46982,12 +46980,7 @@ $RefreshReg$(_c, "SignupView");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-bootstrap":"3AD9A","react-router-dom":"9xmpe","./signup-view.scss":"6Z19M","../../CONST_VARS":"1KD8l","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"6Z19M":[function() {},{}],"1KD8l":[function(require,module,exports) {
-module.exports = {
-    API_URL: "https://movie-api-vudt.onrender.com"
-};
-
-},{}],"bPxKK":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-bootstrap":"3AD9A","react-router-dom":"9xmpe","./signup-view.scss":"6Z19M","../../CONST_VARS":"1KD8l","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"6Z19M":[function() {},{}],"bPxKK":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$89c8 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;

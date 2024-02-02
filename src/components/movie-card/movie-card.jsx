@@ -7,9 +7,10 @@ import "./movie-card.scss";
 
 
 export const MovieCard = ({ movie }) => {
-  return (
+  console.log(movie)
+    return (
     <Card className="h-100">
-      <Card.Img variant="top" src={movie.imagePath} />
+      <Card.Img variant="top" src={movie.image} />
       <Card.Body>
         <Card.Title>{movie.title}</Card.Title>
         <Card.Text>{movie.author}</Card.Text>
@@ -32,7 +33,7 @@ MovieCard.propTypes = {
   movie: PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    imagePath: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
     genre: PropTypes.shape({
       name: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,

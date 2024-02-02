@@ -25,7 +25,7 @@ export const MovieView = ({ movies, favoritemovies, setFavoritemovies, onBackCli
   return (
     <Row className="justify-content-md-center">
       <Col md={7} className="col-12">
-        <img src={movie.image} alt="" className="mx-auto w-100" />
+        <img src={movie.ImagePath} alt="" className="mx-auto w-100" />
       </Col>
       <Col md={5} className="col-12">
         <div className="my-1">

@@ -1,26 +1,17 @@
 import PropTypes from "prop-types";
-import { useState } from "react"; 
+import { useState } from "react";
+import { useSelector } from "react-redux"; 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import "./movie-view.scss";
 
-export const MovieView = ({ movies, favoritemovies, setFavoritemovies, onBackClick }) => { 
+export const MovieView = () => {
+  const movies = useSelector((state) => state.movies.list);
   const { movieId } = useParams();
-  const movie = movies.find((b) => b.id === movieId);
-  const [isFavorited, setIsFavorited] = useState(favoritemovies.includes(movieId));
 
-  const toggleFavorite = () => {
-    if (isFavorited) {
-      const updatedFavorites = favoritemovies.filter((favmovieId) => favmovieId !== movieId);
-      setFavoritemovies(updatedFavorites);
-    } else {
-      const updatedFavorites = [...favoritemovies, movieId];
-      setFavoritemovies(updatedFavorites);
-    }
-    setIsFavorited(!isFavorited);
-  };
+  const movie = movies.find((m) => m.id === movieId);
 
   return (
     <Row className="justify-content-md-center">
@@ -36,23 +27,14 @@ export const MovieView = ({ movies, favoritemovies, setFavoritemovies, onBackCli
           <span>{movie.Description}</span>
         </div>
         <div className="my-1">
-          <span className="h6">Author: </span>
-          <span>{movie.Author.Name}</span>
+          <span className="h6">Director: </span>
+          <span>{movie.Director}</span>
         </div>
         <div className="my-1">
           <span className="h6">Genre: </span>
-          <span>{movie.Genre.Name}</span>
+          <span>{movie.Genre}</span>
         </div>
-        <div className="my-1">
-          <span className="h6">Year: </span>
-          <span>{movie.Year}</span>
-        </div>
-        <button onClick={toggleFavorite} className="my-2">
-          {isFavorited ? "Remove from Favorites" : "Add to Favorites"}
-        </button>
-        <Link to="/" className="back-button" onClick={onBackClick}>
-          Back
-        </Link>
+        <Link to="/" className="back-button">Back</Link>
       </Col>
     </Row>
   );

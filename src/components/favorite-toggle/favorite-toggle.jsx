@@ -11,7 +11,7 @@ export const FavoriteToggle = ({ movie }) => {
 
   const addFavoriteMovie = () => {
     fetch(
-      `https://movie-api-vudt.onrender.com/${user.Username}/movies/${movie.id}`,
+      `https://movie-api-vudt.onrender.com/users/${user.Username}/movies/${movie.id}`,
       { method: "POST", headers: { Authorization: `Bearer ${token}` } }
     )
       .then((response) => {
@@ -34,7 +34,7 @@ export const FavoriteToggle = ({ movie }) => {
 
   const removeFavoriteMovie = () => {
     fetch(
-      `https://movie-api-vudt.onrender.com/${user.Username}/movies/${movie.id}`,
+      `https://movie-api-vudt.onrender.com/users/${user.Username}/movies/${movie.id}`,
       { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
     )
       .then((response) => {
@@ -55,14 +55,13 @@ export const FavoriteToggle = ({ movie }) => {
       });
   };
 
-
-        return (
-            <>
-              {isFav ? (
-                <Button onClick={() => remove(movie.id)}>👎🏻</Button>
-              ) : (
-                <Button onClick={() => favorite(movie.id)}>❤️</Button>
-              )}
-            </>
-          )
-        };
+  return (
+    <>
+      {isFav ? (
+        <Button onClick={removeFavoriteMovie}>👎🏻</Button>
+      ) : (
+        <Button onClick={addFavoriteMovie}>❤️</Button>
+      )}
+    </>
+  )
+};

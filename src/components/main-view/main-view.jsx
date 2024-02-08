@@ -1,107 +1,134 @@
 import { useState, useEffect } from "react";
-import { BookCard } from "../book-card/book-card";
-import { BookView } from "../book-view/book-view";
-import { LoginView } from "../login-view/login-view"; // Corrected import statement
-import { SignupView } from "../signup-view/signup-view"; // Added import statement for SignupView
+import { MovieCard } from "../movie-card/movie-card";
+import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
+import { MoviesList } from "../movies-list/movies-list";
+import { ProfileView } from "../profile-view/profile-view";
+import NavigationBar from "../navigation-bar/navigation-bar";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import { Routes, Route, Navigate, Link, BrowserRouter } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setMovies } from "../redux/reducers/movies";
+import { setUser } from "../redux/reducers/user";
+
 
 export const MainView = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const storedToken = localStorage.getItem("token");
-  const [user, setUser] = useState(storedUser ? storedUser : null);
-  const [token, setToken] = useState(storedToken ? storedToken : null);
-  const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const movies = useSelector((state) => state.movies.list);
+  const { user, token } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
+      dispatch(setUser({ user: storedUser, token: storedToken }));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (!token) {
       return;
     }
 
-    fetch("https://myflixdb-8tdc.onrender.com", {
-      headers: { Authorization: `Bearer ${token}` }, // Corrected string interpolation
+    fetch("https://movie-api-vudt.onrender.com/movies", {
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())
       .then((data) => {
-        const moviesFromApi = data.docs.map((movie) => { // Corrected variable name from 'doc' to 'movie'
+        const moviesFromApi = data.map((movie) => {
           return {
-            id: movie._id, // Corrected variable name from 'movies' to 'movie'
-            Title: movie.Title,
-            Description: movie.Description,
-            Genre: {
-              Name: movie.Genre.Name,
-            },
-            Director: {
-              Name: movie.Director.Name,
-            },
+            id: movie._id,
+            title: movie.Title,
+            description: movie.Description,
+            image: movie.ImagePath,
+            genreName: movie.Genre.Name,
+            director: movie.Director.Name,
           };
         });
-
-        setMovies(moviesFromApi);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
+        dispatch(setMovies(moviesFromApi))
       });
-  }, [token]);
-
-  const handleLogin = (data) => {
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      setToken(data.token);
-    } else {
-      alert("No such user");
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-  };
-
-  if (!user) {
-    return (
-      <>
-        <LoginView onLoggedIn={handleLogin} />
-        or
-        <SignupView onLoggedIn={handleLogin} />
-      </>
-    );
-  }
-
-  if (selectedMovie) {
-    return (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <BookView
-          book={selectedMovie}
-          onBackClick={() => setSelectedMovie(null)}
-        />
-      </>
-    );
-  }
-
-  if (movies.length === 0) {
-    return (
-      <>
-        <button onClick={handleLogout}>Logout</button>
-        <div>The list is empty!</div>
-      </>
-    );
-  }
+  }, [token, dispatch]);
 
   return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      {movies.map((movie) => (
-        <BookCard
-          key={movie.id}
-          book={movie}
-          onBookClick={(newSelectedMovie) => {
-            setSelectedMovie(newSelectedMovie);
-          }}
-        />
-      ))}
-    </div>
+    <BrowserRouter>
+      <NavigationBar />
+      <Row className="justify-content-md-center">
+        <Routes>
+          <Route
+            path="/signup"
+            element={
+              <>
+                {user && token ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <>
+                {user && token ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <LoginView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <>
+                {!user || !token ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={8}>
+                    <ProfileView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/movies/:movieId"
+            element={
+              <>
+                {!user || !token ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <Col md={8}>
+                    <MovieView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <>
+                {!user || !token ?
+                  <Navigate to="/login" replace /> : <MoviesList />
+                }
+              </>
+            }
+          />
+        </Routes>
+      </Row>
+    </BrowserRouter>
   );
 };
+
+export default MainView;
